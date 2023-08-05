@@ -1,6 +1,7 @@
 import { Contract, providers } from 'ethers'
 import { formatEther } from 'ethers/lib/utils'
 import Head from 'next/head'
+import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import Web3Modal from 'web3modal'
 import {
@@ -8,7 +9,7 @@ import {
   CRYPTODEVS_DAO_CONTRACT_ADDRESS,
   CRYPTODEVS_NFT_ABI,
   CRYPTODEVS_NFT_CONTRACT_ADDRESS
-} from '../constants'
+} from '../utils/constants'
 import styles from '../styles/Home.module.css'
 
 export default function Home () {
@@ -32,6 +33,24 @@ export default function Home () {
   const [isOwner, setIsOwner] = useState(false)
   const web3ModalRef = useRef()
 
+  // Helper function to fetch a Provider/Signer instance from Metamask
+  const getProviderOrSigner = async (needSigner = false) => {
+    const provider = await web3ModalRef.current.connect()
+    const web3Provider = new providers.Web3Provider(provider)
+
+    const { chainId } = await web3Provider.getNetwork()
+    if (chainId !== 11155111) {
+      window.alert('Please switch to the Sepolia network')
+      throw new Error('Please switch to the Sepolia network')
+    }
+
+    if (needSigner) {
+      const signer = web3Provider.getSigner()
+      return signer
+    }
+    return web3Provider
+  }
+
   // Helper function to connect wallet
   const connectWallet = async () => {
     try {
@@ -40,6 +59,26 @@ export default function Home () {
     } catch (error) {
       console.error(error)
     }
+  }
+
+  // Helper function to return a DAO Contract instance
+  // given a Provider/Signer
+  const getDaoContractInstance = providerOrSigner => {
+    return new Contract(
+      CRYPTODEVS_DAO_CONTRACT_ADDRESS,
+      CRYPTODEVS_DAO_ABI,
+      providerOrSigner
+    )
+  }
+
+  // Helper function to return a CryptoDevs NFT Contract instance
+  // given a Provider/Signer
+  const getCryptodevsNFTContractInstance = providerOrSigner => {
+    return new Contract(
+      CRYPTODEVS_NFT_CONTRACT_ADDRESS,
+      CRYPTODEVS_NFT_ABI,
+      providerOrSigner
+    )
   }
 
   /**
@@ -208,44 +247,6 @@ export default function Home () {
     }
   }
 
-  // Helper function to fetch a Provider/Signer instance from Metamask
-  const getProviderOrSigner = async (needSigner = false) => {
-    const provider = await web3ModalRef.current.connect()
-    const web3Provider = new providers.Web3Provider(provider)
-
-    const { chainId } = await web3Provider.getNetwork()
-    if (chainId !== 5) {
-      window.alert('Please switch to the Goerli network!')
-      throw new Error('Please switch to the Goerli network')
-    }
-
-    if (needSigner) {
-      const signer = web3Provider.getSigner()
-      return signer
-    }
-    return web3Provider
-  }
-
-  // Helper function to return a DAO Contract instance
-  // given a Provider/Signer
-  const getDaoContractInstance = providerOrSigner => {
-    return new Contract(
-      CRYPTODEVS_DAO_CONTRACT_ADDRESS,
-      CRYPTODEVS_DAO_ABI,
-      providerOrSigner
-    )
-  }
-
-  // Helper function to return a CryptoDevs NFT Contract instance
-  // given a Provider/Signer
-  const getCryptodevsNFTContractInstance = providerOrSigner => {
-    return new Contract(
-      CRYPTODEVS_NFT_CONTRACT_ADDRESS,
-      CRYPTODEVS_NFT_ABI,
-      providerOrSigner
-    )
-  }
-
   // piece of code that runs everytime the value of `walletConnected` changes
   // so when a wallet connects or disconnects
   // Prompts user to connect wallet if not connected
@@ -254,7 +255,7 @@ export default function Home () {
   useEffect(() => {
     if (!walletConnected) {
       web3ModalRef.current = new Web3Modal({
-        network: 'goerli',
+        network: 'sepolia',
         providerOptions: {},
         disableInjectedProvider: false
       })
@@ -427,7 +428,7 @@ export default function Home () {
           )}
         </div>
         <div>
-          <img className={styles.image} src='/cryptodevs/0.svg' />
+          <Image className={styles.image} src='/cryptodevs/0.svg' />
         </div>
       </div>
 

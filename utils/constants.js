@@ -1,7 +1,9 @@
+export const FAKE_NFT_MARKETPLACE = '0x98a81c76AFbf6c14351Bf6607c69a16952D95aF3'
+
 export const CRYPTODEVS_DAO_CONTRACT_ADDRESS =
-  '0xBCB5a2d6077E088d38f19c22F7200b2a34622FCD'
+  '0xe2890bB3A49f05D0DCb361ACdCf2cBC45c54AB6d'
 export const CRYPTODEVS_NFT_CONTRACT_ADDRESS =
-  '0xeD8D756c0F2ECC0E7adB864C2082549924C64B5C'
+  '0x4Cb6109305F8b869949248f5eA3908EBaC8f1dEE'
 
 export const CRYPTODEVS_DAO_ABI = [
   {
@@ -194,8 +196,13 @@ export const CRYPTODEVS_NFT_ABI = [
   {
     inputs: [
       {
+        internalType: 'string',
+        name: 'baseURI',
+        type: 'string'
+      },
+      {
         internalType: 'address',
-        name: '_cryptoDevsContract',
+        name: 'whitelistContract',
         type: 'address'
       }
     ],
@@ -214,17 +221,42 @@ export const CRYPTODEVS_NFT_ABI = [
       {
         indexed: true,
         internalType: 'address',
-        name: 'spender',
+        name: 'approved',
         type: 'address'
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
-        name: 'value',
+        name: 'tokenId',
         type: 'uint256'
       }
     ],
     name: 'Approval',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'owner',
+        type: 'address'
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'operator',
+        type: 'address'
+      },
+      {
+        indexed: false,
+        internalType: 'bool',
+        name: 'approved',
+        type: 'bool'
+      }
+    ],
+    name: 'ApprovalForAll',
     type: 'event'
   },
   {
@@ -262,9 +294,9 @@ export const CRYPTODEVS_NFT_ABI = [
         type: 'address'
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
-        name: 'value',
+        name: 'tokenId',
         type: 'uint256'
       }
     ],
@@ -276,19 +308,21 @@ export const CRYPTODEVS_NFT_ABI = [
     type: 'fallback'
   },
   {
-    inputs: [
+    inputs: [],
+    name: '_paused',
+    outputs: [
       {
-        internalType: 'address',
-        name: 'owner',
-        type: 'address'
-      },
-      {
-        internalType: 'address',
-        name: 'spender',
-        type: 'address'
+        internalType: 'bool',
+        name: '',
+        type: 'bool'
       }
     ],
-    name: 'allowance',
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: '_price',
     outputs: [
       {
         internalType: 'uint256',
@@ -303,23 +337,17 @@ export const CRYPTODEVS_NFT_ABI = [
     inputs: [
       {
         internalType: 'address',
-        name: 'spender',
+        name: 'to',
         type: 'address'
       },
       {
         internalType: 'uint256',
-        name: 'amount',
+        name: 'tokenId',
         type: 'uint256'
       }
     ],
     name: 'approve',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
@@ -327,7 +355,7 @@ export const CRYPTODEVS_NFT_ABI = [
     inputs: [
       {
         internalType: 'address',
-        name: 'account',
+        name: 'owner',
         type: 'address'
       }
     ],
@@ -343,20 +371,19 @@ export const CRYPTODEVS_NFT_ABI = [
     type: 'function'
   },
   {
-    inputs: [],
-    name: 'claim',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'decimals',
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256'
+      }
+    ],
+    name: 'getApproved',
     outputs: [
       {
-        internalType: 'uint8',
+        internalType: 'address',
         name: '',
-        type: 'uint8'
+        type: 'address'
       }
     ],
     stateMutability: 'view',
@@ -366,40 +393,16 @@ export const CRYPTODEVS_NFT_ABI = [
     inputs: [
       {
         internalType: 'address',
-        name: 'spender',
+        name: 'owner',
         type: 'address'
       },
-      {
-        internalType: 'uint256',
-        name: 'subtractedValue',
-        type: 'uint256'
-      }
-    ],
-    name: 'decreaseAllowance',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
       {
         internalType: 'address',
-        name: 'spender',
+        name: 'operator',
         type: 'address'
-      },
-      {
-        internalType: 'uint256',
-        name: 'addedValue',
-        type: 'uint256'
       }
     ],
-    name: 'increaseAllowance',
+    name: 'isApprovedForAll',
     outputs: [
       {
         internalType: 'bool',
@@ -407,12 +410,12 @@ export const CRYPTODEVS_NFT_ABI = [
         type: 'bool'
       }
     ],
-    stateMutability: 'nonpayable',
+    stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [],
-    name: 'maxTotalSupply',
+    name: 'maxTokenIds',
     outputs: [
       {
         internalType: 'uint256',
@@ -424,13 +427,7 @@ export const CRYPTODEVS_NFT_ABI = [
     type: 'function'
   },
   {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256'
-      }
-    ],
+    inputs: [],
     name: 'mint',
     outputs: [],
     stateMutability: 'payable',
@@ -463,10 +460,170 @@ export const CRYPTODEVS_NFT_ABI = [
     type: 'function'
   },
   {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256'
+      }
+    ],
+    name: 'ownerOf',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'presaleEnded',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'presaleMint',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'presaleStarted',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
     inputs: [],
     name: 'renounceOwnership',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'from',
+        type: 'address'
+      },
+      {
+        internalType: 'address',
+        name: 'to',
+        type: 'address'
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256'
+      }
+    ],
+    name: 'safeTransferFrom',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'from',
+        type: 'address'
+      },
+      {
+        internalType: 'address',
+        name: 'to',
+        type: 'address'
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256'
+      },
+      {
+        internalType: 'bytes',
+        name: 'data',
+        type: 'bytes'
+      }
+    ],
+    name: 'safeTransferFrom',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'operator',
+        type: 'address'
+      },
+      {
+        internalType: 'bool',
+        name: 'approved',
+        type: 'bool'
+      }
+    ],
+    name: 'setApprovalForAll',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bool',
+        name: 'val',
+        type: 'bool'
+      }
+    ],
+    name: 'setPaused',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'startPresale',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes4',
+        name: 'interfaceId',
+        type: 'bytes4'
+      }
+    ],
+    name: 'supportsInterface',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool'
+      }
+    ],
+    stateMutability: 'view',
     type: 'function'
   },
   {
@@ -486,24 +643,11 @@ export const CRYPTODEVS_NFT_ABI = [
     inputs: [
       {
         internalType: 'uint256',
-        name: '',
+        name: 'index',
         type: 'uint256'
       }
     ],
-    name: 'tokenIdsClaimed',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'tokenPrice',
+    name: 'tokenByIndex',
     outputs: [
       {
         internalType: 'uint256',
@@ -516,12 +660,55 @@ export const CRYPTODEVS_NFT_ABI = [
   },
   {
     inputs: [],
-    name: 'tokensPerNFT',
+    name: 'tokenIds',
     outputs: [
       {
         internalType: 'uint256',
         name: '',
         type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address'
+      },
+      {
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256'
+      }
+    ],
+    name: 'tokenOfOwnerByIndex',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256'
+      }
+    ],
+    name: 'tokenURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string'
       }
     ],
     stateMutability: 'view',
@@ -544,30 +731,6 @@ export const CRYPTODEVS_NFT_ABI = [
     inputs: [
       {
         internalType: 'address',
-        name: 'to',
-        type: 'address'
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256'
-      }
-    ],
-    name: 'transfer',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
         name: 'from',
         type: 'address'
       },
@@ -578,18 +741,12 @@ export const CRYPTODEVS_NFT_ABI = [
       },
       {
         internalType: 'uint256',
-        name: 'amount',
+        name: 'tokenId',
         type: 'uint256'
       }
     ],
     name: 'transferFrom',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool'
-      }
-    ],
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
@@ -602,6 +759,13 @@ export const CRYPTODEVS_NFT_ABI = [
       }
     ],
     name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'withdraw',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
