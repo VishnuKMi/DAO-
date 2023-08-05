@@ -428,7 +428,12 @@ export default function Home () {
           )}
         </div>
         <div>
-          <Image className={styles.image} src='/cryptodevs/0.svg' />
+          <Image
+            className={styles.image}
+            src='/cryptodevs/0.svg'
+            width={500}
+            height={500}
+          />
         </div>
       </div>
 
