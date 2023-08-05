@@ -4,6 +4,8 @@
 
 This project demonstrates a Decentralized Autonomous Organization(DAO) members can cast their votes for proposals in a decentralized environment. A parallel Fake NFT-Marketplace is created that mints NFT to proposal-creator if positive vote-count exceeds negative vote-count.
 
+NOTE: To vote for proposals, you will require CryptoDevs NFT tokens. You can get the NFT from <a href="https://presale-portal-five.vercel.app/">here</a> or check out my <a href="https://github.com/VishnuKMi/PresalePortal">repo</a>
+
 Try running some of the following tasks:
 
 ```shell
